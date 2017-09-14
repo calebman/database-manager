@@ -1,0 +1,23 @@
+{
+  "name": "DBM",
+  "version": "1.0.0",
+  "main": "index.html",
+  "window": {
+    "min_width": 1000,
+    "min_height": 800,
+    "icon": "assets/icon.png",
+    "position": "center"
+  },
+  "author": {
+    "name": "CJH",
+    "url": ""
+  },
+  "scripts": {
+    "dev": "nw",
+    "prod": "nwbuild --platforms win32,win64,osx64,linux32,linux64 --buildDir dist/"
+  },
+  "devDependencies": {
+    "nw": "^0.18.3",
+    "nw-builder": "^3.1.2"
+  }
+}

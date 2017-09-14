@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "host":"localhost",
+    "driver": "mysql",
+    "user": "root",
+    "database": "vue_dm_db",
+    "password": "123456"
+  },
+
+  "production": {
+    "driver": "mysql",
+    "user": "root",
+    "database": "vueDM_db"
+  }
+}

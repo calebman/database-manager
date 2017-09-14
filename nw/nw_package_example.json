@@ -1,0 +1,33 @@
+{
+  "main": "index.html",         /*初始页*/
+  "name": "test",               /*项目名称*/
+  "description": "测试项目",     /*项目描述*/
+  "version": "0.1.0",           /*版本号*/
+  "keywords": ["node-webkit"],  /*关键字*/
+  "nodejs": true,               /*是否启动node支持*/
+  //"node-main": "js/node.js",  /*启动项目最开始加载的程序*/
+  "single-instance": true,      /*是否指启动一个NW实例*/
+  "window": {                   /**窗口属性设置 */
+    "title": "demo",          /*默认标题*/
+    //"icon": "link.png",     /*窗口的图标*/
+    "toolbar": false,         /*是否显示地址栏,工具栏和导航栏*/
+    "resizable": true,        /*是否允许调整窗口大小*/
+    "fullscreen": false,      /*是否全屏*/
+    "show_in_taskbar": true,  /*是否在任务栏显示图标*/
+    "frame": true,            /*是否显示最小化,最大化以及关闭*/
+    "position": "center",     /*打开窗口时的位置*/
+    "width": 800,             /*主窗口的宽度*/
+    "height": 670,            /*主窗口的的高度。*/
+    "min_width": 400,         /*主窗口的最小宽度*/
+    "min_height": 335,        /*主窗口的最小高度*/
+    "max_width": 800,         /*最大宽度*/
+    "max_height": 670,        /*最大高度*/
+    "show": true,             /*是否可见*/
+    "kiosk": false            /*程序是否将全屏显示，并且阻止用户离开应用*/
+  },
+  "webkit": {                   /*webkit设置*/
+    "plugin": true,           /*是否加载插件*/
+    "java": false,            /*是否加载Java applets*/
+    "page-cache": false       /*是否您启用缓存*/
+  }
+}
