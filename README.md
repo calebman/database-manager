@@ -64,7 +64,7 @@ nodejs server.js
 
 [地址在这里](https://github.com/carrayboy/vue-DBM)
 
-# 如何将结合前后端项目
+# 如何结合前后端项目
 1. 打开cmd控制台，cd进入到前端工程的根目录运行npm run build
 2. 等待一段时间将在dist目录下生产index.html与static文件夹，将其拷入后端的public目录下（运行nodejs server.js将会生成public目录）
 3. 重启服务，在地址栏输入localhost:3982
