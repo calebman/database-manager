@@ -3,7 +3,7 @@
 
 **DMB**是针对经常使用excel的个人或者团体（比如公司每月提交excel报表）而开发的excel数据管理系统，他能够帮助您完成表格的整合、编辑、数据筛选以及导出等等功能，一键导入、按需筛选、指定导出，**DMB**能让你不再被被一堆excel文件折磨。
 
-**DBM**后端是使用nodejs开发的服务端应用，响应[DBM前端](https://github.com/carrayboy/vue-DBM)的请求，其中涉及到sql语句组装、基于url的权限控制、异步的同步实现等。
+**DBM**后端是使用nodejs开发的服务端应用，响应[DBM前端](https://github.com/calebman/vue-DBM)的请求，其中涉及到sql语句组装、基于url的权限控制、异步的同步实现等。
 
 如果您也想使用vue.js结合nodejs开发一个带前后端的完整应用的话，参考**DBM**的实现也许能够帮您解决如下问题
 
@@ -58,11 +58,11 @@ nodejs server.js
 
 # 前端工程演示
 
-[demo地址](https://carrayboy.github.io/vue-DBM/index.html)
+[demo地址](https://calebman.github.io/vue-DBM/index.html)
 
 # 对应的前端工程
 
-[地址在这里](https://github.com/carrayboy/vue-DBM)
+[地址在这里](https://github.com/calebman/vue-DBM)
 
 # 如何结合前后端项目
 1. 打开cmd控制台，cd进入到前端工程的根目录运行npm run build

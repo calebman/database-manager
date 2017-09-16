@@ -6,6 +6,7 @@ var admin = require('../service/admin')
 var webResult = require('../util/webResult')
 var util = require('../util/util')
 var path = require('path')
+var permission = require('./permission')
 var app = express();
 
 app.use(bodyParser.json());
@@ -16,6 +17,7 @@ app.use(session({
     secret: 'Back', //secret的值建议使用随机字符串
     cookie: {maxAge: 60 * 1000 * 30} // 过期时间（毫秒）
 }));
+app.use(permission.filter)
 
 var port = normalizePort(process.env.PORT || '3982');
 app.set('port', port);
@@ -28,10 +30,10 @@ app.use('/login', function(req, res, next){
     var data = JSON.parse(req.param("data"))
     admin.login(data.username,data.password,function (result) {
         if(result.code == 200){
-            req.session.token={
+            permission.login(req.session,{
                 username:data.username,
                 password:data.password
-            }
+            })
         }
         webResult.createResponse(res,result)
     })
@@ -58,22 +60,7 @@ app.use('/create', function(req, res){
         webResult.createResponse(res,webResult.createResult(300,"请先登录"))
     }else{
         admin.create(req.session.token.username,function (result) {
-            req.session.token.roleCode = result.data.loginInfo.roleCode
             webResult.createResponse(res,result)
-        })
-    }
-});
-//HTTP请求拦截器，权限验证
-app.use('/admin', function(req, res, next){
-    if(util.isEmptyObject(req.session.token)){
-        webResult.createResponse(res,webResult.createResult(300,"请先登录"))
-    }else{
-        admin.permissionMatch(req.session.token.username,req.session.token.roleCode,"admin"+req.url,function (result) {
-            if(result.code == 200){
-                next()
-            }else{
-                webResult.createResponse(res,result)
-            }
         })
     }
 });

@@ -84,20 +84,21 @@ function create(username,resultBack) {
         }
     })
 }
-//用户权限判断
-function permissionMatch(username,roleCode,requestUrl,resultBack) {
+//获取用户权限
+function getPermission(username,resultBack) {
     var task = []
     //查询该用户的用户状态
     task.push(function (callback) {
         execute((squel.select().from("t_admin")
                 .field("is_use","isUse")
+                .field("role_id","roleCode")
                 .where("username = ?",username).toString()),
             function(err,vals){
                 if(vals.length > 0){
                     if(vals[0].isUse == 0){
                         callback("发起请求的用户被禁用")
                     }else{
-                        callback(null)
+                        callback(null,vals[0].roleCode)
                     }
                 }else{
                     callback("发起请求的用户不存在")
@@ -105,7 +106,7 @@ function permissionMatch(username,roleCode,requestUrl,resultBack) {
             })
     })
     //查询该用户的所有权限资源
-    task.push(function (callback) {
+    task.push(function (roleCode,callback) {
         execute((squel.select().from("t_role_resource")
                 .field("permission_url","permissionUrl")
                 .left_join("t_resource",null,"resource_id = t_resource.tid")
@@ -114,39 +115,16 @@ function permissionMatch(username,roleCode,requestUrl,resultBack) {
                 if(vals.length > 0){
                     callback(null,vals)
                 }else{
-                    callback("权限不足，请联系管理员")
+                    callback(null,[])
                 }
             })
-    })
-    //构建该用户的菜单列表
-    task.push(function (userRoles,callback) {
-        //对请求的URL进行验证
-        let isValidateSuccess = false
-        let requsetRoles = []
-        requsetRoles.push(requestUrl+"/*")
-        while(requestUrl.lastIndexOf("/") > -1){
-            requestUrl = requestUrl.substr(0,requestUrl.lastIndexOf("/"))
-            requsetRoles.splice(0,0,requestUrl+"/*")
-        }
-        requsetRoles.forEach((requsetRole,index)=>{
-            userRoles.forEach((value,index)=>{
-                if(requsetRole == value.permissionUrl){
-                    isValidateSuccess = true
-                }
-            })
-        })
-        if(isValidateSuccess){
-            callback(null,"有权访问")
-        }else{
-            callback("权限不足，请联系管理员")
-        }
     })
     //任务流程控制
     async.waterfall(task, function (err, result) {
         if (err) {
-            resultBack(webResult.createResult(400,err))
+            resultBack(err)
         }else{
-            resultBack(webResult.createResult(200,result))
+            resultBack(null,result)
         }
     })
 }
@@ -154,4 +132,4 @@ function permissionMatch(username,roleCode,requestUrl,resultBack) {
 exports.login = login;
 exports.update = update;
 exports.create = create;
-exports.permissionMatch = permissionMatch;
+exports.getPermission = getPermission;
