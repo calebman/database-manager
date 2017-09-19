@@ -113,4 +113,33 @@ function create(resultBack) {
     })
 }
 
+//编辑表格
+function edit(tableName,updateOpts,isAdd,resultBack) {
+    if(isAdd){
+        //构建建表语句
+        //选择项插入
+        //设定表格位置
+        //构建权限项
+    }else{
+        //修改表名
+        //修改列项
+        //修改选择项
+        //修改表格位置
+    }
+}
+
+//删除表格
+function del(tableName,resultBack) {
+    var sql = "DROP TABLE "+tableName
+    execute(sql,function (err,vals) {
+        if(err){
+            resultBack(webResult.createResult(100,"表格不存在"))
+        }else{
+            resultBack(webResult.createResult(200,"表格删除成功"))
+        }
+    })
+}
+
 exports.create=create
+exports.edit=edit
+exports.del=del

@@ -60,5 +60,21 @@ router.route("/system/table/excel")
 
         })
     })
+//表格编辑
+router.route("/system/table/edit")
+    .post(function(req, res){
+        var data = JSON.parse(req.param("data"))
+        tableMoudle.edit(data.tableName,data.updateOpts,data.isAdd,function (result) {
+            webResult.createResponse(res,result)
+        })
+    })
 
+//表格删除
+router.route("/system/table/del")
+    .post(function(req, res){
+        var data = JSON.parse(req.param("data"))
+        tableMoudle.del(data.tableName,function (result) {
+            webResult.createResponse(res,result)
+        })
+    })
 module.exports = router;
