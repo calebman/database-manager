@@ -19,10 +19,20 @@ permission.authorize = function (token,next) {
 permission.after = function (err, req, res, next) {
     if(err){
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
-        res.send({
-            code:100,
-            message:err
-        });
+        switch (err){
+            case "permission denied":
+                res.send({
+                    code:100,
+                    message:"权限不足"
+                });
+                break
+            case "unknow account":
+                res.send({
+                    code:300,
+                    message:"请登录系统"
+                });
+                break
+        }
     }else{
         next()
     }
