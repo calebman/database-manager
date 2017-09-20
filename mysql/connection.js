@@ -12,6 +12,7 @@ var pool = mysql.createPool({
 });
 //导出执行相关
 var execute=function(sql,callback){
+    console.log("[sql] "+sql)
     pool.getConnection(function(err,conn){
         if(err){
             callback(err,null,null);

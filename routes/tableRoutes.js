@@ -64,7 +64,7 @@ router.route("/system/table/excel")
 router.route("/system/table/edit")
     .post(function(req, res){
         var data = JSON.parse(req.param("data"))
-        tableMoudle.edit(data.tableName,data.updateOpts,data.isAdd,function (result) {
+        tableMoudle.edit(req.session.token.roleCode,data.tableName,data.updateOpts,data.isAdd,function (result) {
             webResult.createResponse(res,result)
         })
     })

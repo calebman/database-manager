@@ -110,8 +110,9 @@ function getTree(data,parentCode) {
         var item = data[i]
         if(item.parentCode == parentCode){
             var tree = {}
-            tree.id=item.selfCode
+            tree.value=item.selfCode
             tree.label=item.name
+            tree.status = item.isTable==1?-1:0
             tree.children = []
             getChildren(tree,data)
             data.splice(i,1)
@@ -126,10 +127,11 @@ function getChildren(parentItem,data) {
     if(existChildren(parentItem,data)){
         for(var i=0;i<data.length;i++){
             var item = data[i]
-            if(item.parentCode == parentItem.id){
+            if(item.parentCode == parentItem.value){
                 var tree = {}
-                tree.id=item.selfCode
+                tree.value=item.selfCode
                 tree.label=item.name
+                tree.status = item.isTable==1?-1:0
                 tree.children = []
                 getChildren(tree,data)
                 data.splice(i,1)
@@ -145,11 +147,22 @@ function getChildren(parentItem,data) {
 function existChildren(parentItem,data) {
     for(var i=0;i<data.length;i++){
         var item = data[i]
-        if(parentItem.id == item.parentCode){
+        if(parentItem.value == item.parentCode){
             return true
         }
     }
     return false
+}
+//递归组装position
+function getPosition(vals,position) {
+    if(position[0] == 0)
+        return position.splice(0,1)
+    vals.forEach((v,i)=>{
+        if(v.selfCode == position[0]){
+            position.splice(0,0,v.parentCode)
+        }
+    })
+    getPosition(vals,position)
 }
 exports.isEmptyObject = isEmptyObject;
 exports.isUnderfined = isUnderfined;
@@ -161,3 +174,4 @@ exports.getUUID = getUUID;
 exports.getTime = getTime;
 exports.getFilterSql = getFilterSql;
 exports.getTree = getTree;
+exports.getPosition = getPosition;

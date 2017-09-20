@@ -68,6 +68,7 @@ function create(username,resultBack) {
         execute(squel.select().from("t_table")
             .field("tid","selfCode")
             .field("parent_code","parentCode")
+            .field("is_table","isTable")
             .field("name").toString(),
             function (err,vals) {
                 data.tableTree = util.getTree(vals,0)
@@ -113,18 +114,18 @@ function getPermission(username,resultBack) {
                 .where("role_id = ?",roleCode).toString()),
             function(err,vals){
                 if(vals.length > 0){
-                    callback(null,vals)
+                    callback(null,vals,roleCode)
                 }else{
-                    callback(null,[])
+                    callback(null,[],roleCode)
                 }
             })
     })
     //任务流程控制
-    async.waterfall(task, function (err, result) {
+    async.waterfall(task, function (err, result,roleCode) {
         if (err) {
             resultBack(err)
         }else{
-            resultBack(null,result)
+            resultBack(null,result,roleCode)
         }
     })
 }

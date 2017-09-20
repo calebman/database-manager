@@ -6,7 +6,8 @@ permission.config = {
 }
 //授权钩子
 permission.authorize = function (token,next) {
-    admin.getPermission(token.username,function (err,result) {
+    admin.getPermission(token.username,function (err,result,roleCode) {
+        token.roleCode = roleCode
         var roles = []
         result.forEach((v,i)=>{
             roles.push(v.permissionUrl)
