@@ -1,4 +1,4 @@
-var permission = require('./express-permission/application')
+var permission = require('./permission/application')
 var admin = require('../service/admin')
 //配置拦截URL
 permission.config = {

@@ -7,7 +7,24 @@ var webResult = require('../util/webResult')
 var util = require('../util/util')
 var path = require('path')
 var permission = require('./permission')
+var webSocket = require('./websocket/application')
 var app = express();
+
+webSocket.create(3983,function (id,event,message) {
+    let count = 0
+    console.log("[webSocket] message "+message)
+    var task =  setInterval(function() {
+        webSocket.wsSend(id,"message",count++,function (err) {
+            if(err) {
+                clearInterval(task)
+            }
+            if(count > 100){
+                count = 0
+                clearInterval(task)
+            }
+        })
+    }, 330)
+})
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -218,14 +218,18 @@ function edit(roleCode,tableName,updateOpts,isAdd,resultBack) {
         })
         //选择项插入
         task.push(function (items,addPosition,callback) {
-            execute(squel.insert().into("t_select")
-                .setFieldsRows(items).toString(),function (err,vals) {
-                if(err){
-                    callback(err)
-                }else{
-                    callback(null,addPosition)
-                }
-            })
+            if(items.length>0){
+                execute(squel.insert().into("t_select")
+                    .setFieldsRows(items).toString(),function (err,vals) {
+                    if(err){
+                        callback(err)
+                    }else{
+                        callback(null,addPosition)
+                    }
+                })
+            }else{
+                callback(null,addPosition)
+            }
         })
         //设定表格位置
         task.push(function (addPosition,callback) {
@@ -246,7 +250,7 @@ function edit(roleCode,tableName,updateOpts,isAdd,resultBack) {
                 execute(squel.insert().into("t_resource")
                     .set("resource_name",tableName+"-查看")
                     .set("resource_description","查看"+tableName+"数据")
-                    .set("permission_url","admin/data/table/"+tableName+"/create")
+                    .set("permission_url","admin/data/table/"+tableName+"/create/*")
                     .set("disabled",0)
                     .toString(),function (err,vals) {
                     if(err){
@@ -264,7 +268,7 @@ function edit(roleCode,tableName,updateOpts,isAdd,resultBack) {
                 execute(squel.insert().into("t_resource")
                     .set("resource_name",tableName+"-添加")
                     .set("resource_description","添加"+tableName+"数据")
-                    .set("permission_url","admin/data/table/"+tableName+"/add")
+                    .set("permission_url","admin/data/table/"+tableName+"/add/*")
                     .set("disabled",0)
                     .toString(),function (err,vals) {
                     if(err){
@@ -282,7 +286,7 @@ function edit(roleCode,tableName,updateOpts,isAdd,resultBack) {
                 execute(squel.insert().into("t_resource")
                     .set("resource_name",tableName+"-编辑")
                     .set("resource_description","编辑"+tableName+"数据")
-                    .set("permission_url","admin/data/table/"+tableName+"/edit")
+                    .set("permission_url","admin/data/table/"+tableName+"/edit/*")
                     .set("disabled",0)
                     .toString(),function (err,vals) {
                     if(err){
@@ -300,7 +304,7 @@ function edit(roleCode,tableName,updateOpts,isAdd,resultBack) {
                 execute(squel.insert().into("t_resource")
                     .set("resource_name",tableName+"-删除")
                     .set("resource_description","删除"+tableName+"数据")
-                    .set("permission_url","admin/data/table/"+tableName+"/del")
+                    .set("permission_url","admin/data/table/"+tableName+"/del/*")
                     .set("disabled",0)
                     .toString(),function (err,vals) {
                     if(err){
@@ -661,7 +665,7 @@ function del(tableName,resultBack) {
     })
     //删除表格带有的选择项
     task.push(function (callback) {
-        execute(squel.delete().from("t_table")
+        execute(squel.delete().from("t_select")
             .where("select_key LIKE '"+tableName+"_%'")
             .toString(),function (err,vals) {
             if(err){
