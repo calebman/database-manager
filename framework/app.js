@@ -7,24 +7,7 @@ var webResult = require('../util/webResult')
 var util = require('../util/util')
 var path = require('path')
 var permission = require('./permission')
-var webSocket = require('./websocket/application')
 var app = express();
-
-webSocket.create(3983,function (id,event,message) {
-    let count = 0
-    console.log("[webSocket] message "+message)
-    var task =  setInterval(function() {
-        webSocket.wsSend(id,"message",count++,function (err) {
-            if(err) {
-                clearInterval(task)
-            }
-            if(count > 100){
-                count = 0
-                clearInterval(task)
-            }
-        })
-    }, 330)
-})
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -97,6 +80,7 @@ if (!fs.existsSync(path.join(__dirname, '../public/excel/tmp'))) {
 }
 
 function normalizePort(val) {
+    //test(4000,"234.xlsx")
     var port = parseInt(val, 10);
 
     if (isNaN(port)) {
@@ -112,5 +96,25 @@ function normalizePort(val) {
     return false;
 }
 
+function test(count,fileName) {
+    var data = []
+    var header = ["文本列","数字列","时间列","选择列"]
+    data.push(header)
+    for(var i=0;i<count;i++){
+        var row = []
+        row.push("text"+i)
+        row.push(i)
+        row.push("2017-09-05 10:26:44")
+        row.push("苹果")
+        data.push(row)
+    }
+    var buffer = require('node-xlsx').build([{name:"sheet", data:data}]);
+    var fileDir = 'excel/'+util.getTime("YYYYMMDD")
+    var targetDir = path.join( 'public/'+ fileDir);
+    if (!fs.existsSync(targetDir)) {
+        fs.mkdir(targetDir);
+    }
+    fs.writeFileSync(targetDir+"/"+fileName,buffer,'binary');
+}
 module.exports = app
 

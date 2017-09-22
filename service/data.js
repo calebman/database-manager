@@ -321,6 +321,7 @@ function exportData(tableName,columns,filterParam,resultBack) {
     })
     exportTableData.push(col)
     sqlSquel.where(util.getFilterSql(filterParam))
+    resultBack(null,false,20,"正在提取数据",exportTableData)
     //取得具体数据
     execute(sqlSquel.toString(),function (err,vals) {
         if(err) {
@@ -333,9 +334,99 @@ function exportData(tableName,columns,filterParam,resultBack) {
                 }
                 exportTableData.push(row)
             })
-            resultBack(exportTableData)
+            resultBack(null,true,40,"数据提取成功",exportTableData)
         }
 
+    })
+}
+//构建sql语句插入数据库
+function importData(tableName,obj, resultBack) {
+    var task = []
+    task.push(function (callback) {
+        execute(squel.select().from("information_schema.columns")
+            .field("column_name","columnName")
+            .where("table_schema = ?","vue_dm_db")
+            .where("table_name = ?",tableName).toString(),function (err,vals) {
+            if(err) {
+                callback(err)
+            }
+            else{
+                var cols = []
+                vals.forEach((v,i)=>{
+                    if(v.columnName != "tid"){
+                        let arr = v.columnName.split("_")
+                        cols.push({
+                            name:arr[1],
+                            type:arr[0],
+                            prop:v.columnName
+                        })
+                    }
+                })
+                var insertCol = []
+                obj[0].forEach((v,i)=>{
+                    cols.forEach((col,j)=>{
+                        if(v==col.name&&col.type!="img"){
+                            insertCol.push({
+                                prop:col.prop,
+                                index:i
+                            })
+                        }
+                    })
+                })
+                if(insertCol.length < 1){
+                    callback("未检测到合法列项")
+                }else{
+                    //以5000一次插入分割
+                    obj.splice(0,1)
+                    var insertSql = []
+                    var s = squel.insert().into(tableName)
+                    var rows = []
+                    var haveUseLoad = true
+                    obj.forEach((row,j)=>{
+                        var rowSql = {}
+                        insertCol.forEach((v,i)=>{
+                            rowSql[v.prop] = row[v.index]
+                        })
+                        rows.push(rowSql)
+                        haveUseLoad = true
+                        if((j+1)%5000 == 0){
+                            s.setFieldsRows(rows)
+                            insertSql.push(s.toString())
+                            haveUseLoad = false
+                            s = squel.insert().into(tableName)
+                            rows = []
+                            resultBack(null,false,(40+(j*30)/obj.length),"构建录入数据")
+                        }
+                    })
+                    if(haveUseLoad){
+                        s.setFieldsRows(rows)
+                        insertSql.push(s.toString())
+                    }
+                    callback(null,insertSql)
+                }
+            }
+        })
+    })
+    task.push(function (insertSql,callback) {
+        resultBack(null,false,70,"执行批量录入")
+        var i =0
+        async.eachSeries(insertSql, function (sql,callback) {
+            i++
+           execute(sql,function (err,vals) {
+               if(err) return callback(err)
+               else{
+                   resultBack(null,false,(70+(i*30)/insertSql.length),"批量录入数据库")
+                   callback(null)
+               }
+           })
+        },function (err) {
+            if (err) return callback(err);
+            callback(null)
+        })
+    })
+    async.waterfall(task, function (err) {
+        if (err) return resultBack(err);
+        resultBack(null,true,100)
     })
 }
 exports.create = create;
@@ -346,3 +437,4 @@ exports.del = del;
 exports.addImgUrl = addImgUrl;
 exports.delImg = delImg;
 exports.exportData = exportData;
+exports.importData = importData;

@@ -1,11 +1,13 @@
 var http = require('http');
 var app = require('./framework/app')
-
+var webSocket = require('./framework/websocket/application')
 var server = http.createServer(app);
 
 server.listen(app.get('port'));
 server.on('error', onError);
 server.on('listening', onListening);
+
+webSocket.create(3983)
 
 function onError(error) {
     if (error.syscall !== 'listen') {
@@ -37,5 +39,5 @@ function onListening() {
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    console.log('Listening on ' + bind)
+    console.log('[HTTP] Listening on ' + bind)
 }
