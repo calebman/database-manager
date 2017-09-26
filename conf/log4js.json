@@ -1,0 +1,16 @@
+{
+  "appenders":{
+    "cheeseLogs":{
+      "type" : "dateFile",
+      "filename" : "logs/app",
+      "pattern" : "-yyyy-MM-dd.log",
+      "alwaysIncludePattern" : true,
+      "category" : "app"
+    },
+    "console":{"type" : "console"}
+  },
+  "categories":{
+    "cheese":{"appenders":["cheeseLogs"],"level":"error"},
+    "default":{"appenders":["console"],"level":"trace"}
+  }
+}

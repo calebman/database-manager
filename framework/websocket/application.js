@@ -1,6 +1,6 @@
 var socket = require('socket.io');
 var uuid = require('uuid');
-
+var logger = require("../logger/application")
 exports.wsSendAll = function (type,message) {
     var clients = global.clients
     clients.forEach((client,i)=>{
@@ -57,11 +57,11 @@ exports.create = function (port,messageBack) {
     var io = socket.listen(port);
     io.on('connection', function (socket) {
         var client_uuid = uuid.v4().replace(/-/g,"")
-        console.log(client_uuid+" connect server")
+        logger.info(client_uuid+" connect server")
         var client = { "id": client_uuid, "socket": socket, "username":null}
         clients.push(client);
         var closeSocket = function() {
-            console.log(client_uuid+" disconnect server")
+            logger.info(client_uuid+" disconnect server")
             clients.forEach((c,i)=>{
                 if (clients[i].id == client_uuid) {
                     clients.splice(i, 1);
@@ -72,7 +72,7 @@ exports.create = function (port,messageBack) {
             clients.forEach((c,i)=>{
                 if (clients[i].id == client_uuid) {
                     clients[i].username = username
-                    console.log("[webSocket] %s bind %s",client_uuid,username)
+                    logger.info("[webSocket] %s bind %s",client_uuid,username)
                 }
             })
         });
@@ -86,5 +86,5 @@ exports.create = function (port,messageBack) {
             closeSocket()
         })
     });
-    console.log("[webSocket] Listening on port "+port)
+    logger.info("[webSocket] Listening on port "+port)
 }

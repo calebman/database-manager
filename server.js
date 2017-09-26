@@ -1,13 +1,13 @@
 var http = require('http');
 var app = require('./framework/app')
-var webSocket = require('./framework/websocket/application')
+var logger = require('./framework/logger/application')
+
 var server = http.createServer(app);
 
 server.listen(app.get('port'));
 server.on('error', onError);
 server.on('listening', onListening);
 
-webSocket.create(3983)
 
 function onError(error) {
     if (error.syscall !== 'listen') {
@@ -21,11 +21,11 @@ function onError(error) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
+            logger.error(bind + ' requires elevated privileges');
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
+            logger.error(bind + ' is already in use');
             process.exit(1);
             break;
         default:
@@ -39,5 +39,5 @@ function onListening() {
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
-    console.log('[HTTP] Listening on ' + bind)
+    logger.info('[HTTP] Listening on ' + bind)
 }
