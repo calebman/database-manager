@@ -99,14 +99,14 @@ files.forEach((val,index)=>{
 });
 //数据目录加载
 if (!fs.existsSync(path.join(__dirname, '../public/upload/tmp'))) {
-    fs.mkdir(path.join(__dirname, '../public/upload/tmp'));
+    util.mkdirsSync(path.join(__dirname, '../public/upload/tmp'))
 }
 if (!fs.existsSync(path.join(__dirname, '../public/excel/tmp'))) {
-    fs.mkdir(path.join(__dirname, '../public/upload/tmp'));
+    util.mkdirsSync(path.join(__dirname, '../public/excel/tmp'));
 }
 //日志目录加载
 if (!fs.existsSync(path.join(__dirname, '../logs'))) {
-    fs.mkdir(path.join(__dirname, '../logs'));
+    util.mkdirsSync(path.join(__dirname, '../logs'));
 }
 
 function normalizePort(val) {

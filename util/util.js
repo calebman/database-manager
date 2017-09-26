@@ -2,6 +2,8 @@ var transliteration = require('transliteration');
 var uuid = require('uuid');
 var moment = require('moment');
 var squel = require("squel");
+var fs = require('fs');
+var path = require('path');
 //判断是否为空对象
 function isEmptyObject(obj) {
     for (var key in obj) {
@@ -164,6 +166,42 @@ function getPosition(vals,position) {
     })
     getPosition(vals,position)
 }
+
+//递归创建目录 同步方法
+function mkdirsSync(dirname, mode){
+    console.log(dirname);
+    if(fs.existsSync(dirname)){
+        return true;
+    }else{
+        if(mkdirsSync(path.dirname(dirname), mode)){
+            fs.mkdirSync(dirname, mode);
+            return true;
+        }
+    }
+}
+//同步删除指定目录下的所前目录和文件,包括当前目录
+function rmdirsSync(targetPath) {
+    try{
+        let files = [];
+        if( fs.existsSync(targetPath) ) {
+            files = fs.readdirSync(targetPath);
+            files.forEach(function(file,index){
+                let curPath = targetPath + "/" + file;
+                if(fs.statSync(curPath).isDirectory()) { // recurse
+                    if(!rmdirsSync(curPath)) return false;
+                } else { // delete file
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(targetPath);
+        }
+    }catch(e)
+    {
+        log.error("remove director fail! path=" + targetPath + " errorMsg:" + e);
+        return false;
+    }
+    return true;
+}
 exports.isEmptyObject = isEmptyObject;
 exports.isUnderfined = isUnderfined;
 exports.transliterationStr = transliterationStr;
@@ -175,3 +213,5 @@ exports.getTime = getTime;
 exports.getFilterSql = getFilterSql;
 exports.getTree = getTree;
 exports.getPosition = getPosition;
+exports.mkdirsSync = mkdirsSync;
+exports.rmdirsSync = rmdirsSync;
