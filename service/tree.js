@@ -20,7 +20,7 @@ function edit(isAdd,parentNode,node,callback) {
         })
     }else{
         execute(squel.update().table("t_table")
-            .set("parent_code",parentNode.value)
+            .set("parent_code",parentNode.value==null?0:parentNode.value)
             .set("name",node.label)
             .set("is_table",0)
             .where("tid = ?",node.value).toString(),function (err,vals) {

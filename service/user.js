@@ -18,6 +18,7 @@ function create(username,resultBack) {
                 .field("realname")
                 .field("is_use","isUse")
                 .field("nick_name","nickName")
+                .field("t_role.tid","roleCode")
                 .left_join("t_role",null,"role_id = t_role.tid")
                 .where("username != ?",username)
                 .order("t_admin.tid",false).toString()),
@@ -49,25 +50,13 @@ function create(username,resultBack) {
     })
 }
 //添加一个用户
-function add(username,realname,roleCode,resultBack) {
+function add(username,realname,resultBack) {
     var task = []
-    //判断是否有此角色
-    task.push(function (callback) {
-        execute(squel.select().from("t_role")
-                .where("tid = ?", roleCode).toString(),
-            function (err, vals) {
-                if (vals.length > 0) {
-                    callback(null)
-                } else {
-                    callback("角色不存在")
-                }
-            })
-    })
     task.push(function (callback) {
         execute((squel.insert().into("t_admin")
                 .set("username",username)
                 .set("password",crypto.cryptoFromSHA1("123456"))
-                .set("role_id",roleCode)
+                .set("role_id",null)
                 .set("is_use",0)
                 .set("realname",realname)
                 .toString()),
@@ -77,7 +66,6 @@ function add(username,realname,roleCode,resultBack) {
                 }else{
                     callback("添加用户失败")
                 }
-                resultBack(vals)
             })
     })
     //任务流程控制

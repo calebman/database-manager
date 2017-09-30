@@ -13,7 +13,7 @@ router.route("/system/user/create")
 router.route("/system/user/add")
     .post(function(req, res){
         var data = JSON.parse(req.param("data"))
-        userMoudle.add(data.username,data.realname,data.roleCode,function (result) {
+        userMoudle.add(data.username,data.realname,function (result) {
             webResult.createResponse(res,result)
         })
     })

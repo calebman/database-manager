@@ -1,5 +1,6 @@
 //导入所需模块
 var mysql=require("mysql");
+var logger = require('../framework/logger/application')
 //导入配置文件
 var env = 'dev'
 var cfg  =require("../conf/db.json")[env];
@@ -12,7 +13,7 @@ var pool = mysql.createPool({
 });
 //导出执行相关
 var execute=function(sql,callback){
-    console.log("[sql] "+sql)
+    logger.info("[execute sql] "+sql)
     pool.getConnection(function(err,conn){
         if(err){
             callback(err,null,null);
